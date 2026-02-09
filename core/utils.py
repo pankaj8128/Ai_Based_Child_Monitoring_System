@@ -7,7 +7,7 @@ def calculate_age_in_months(dob):
     return (today.year - dob.year) * 12 + today.month - dob.month
 
 def generate_ai_suggestion(child):
-    genai.configure(api_key="AIzaSyBm9zHPPD60OXLk9ZvK3vfZqLk498BSHTI")  # or use settings.GEMINI_API_KEY
+    genai.configure(api_key="AIzaSyDhKfDMypsjAiBWmHIWxmfuCmZSQxf892A")  # or use settings.GEMINI_API_KEY
 
     milestones = ChildMilestone.objects.filter(child=child).exclude(status='pending')
     activities = ActivityReport.objects.filter(child=child).order_by('-date')[:5]

@@ -137,4 +137,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 load_dotenv()
 
-GEMINI_API_KEY = os.getenv("AIzaSyBm9zHPPD60OXLk9ZvK3vfZqLk498BSHTI")
+GEMINI_API_KEY = os.getenv("AIzaSyDhKfDMypsjAiBWmHIWxmfuCmZSQxf892A")
