@@ -2,12 +2,14 @@ import google.generativeai as genai
 from datetime import date
 from .models import GeminiSuggestion, ChildMilestone, ActivityReport
 
+
 def calculate_age_in_months(dob):
     today = date.today()
     return (today.year - dob.year) * 12 + today.month - dob.month
 
+
 def generate_ai_suggestion(child):
-    genai.configure(api_key="AIzaSyDu6pYMC1YUzAXfDni6nt8opsmX_fiCe0g")  # or use settings.GEMINI_API_KEY
+    genai.configure(api_key="AIzaSyDu6pYMC1YUzAXfDni6nt8opsmX_fiCe0g")
 
     milestones = ChildMilestone.objects.filter(child=child).exclude(status='pending')
     activities = ActivityReport.objects.filter(child=child).order_by('-date')[:5]
@@ -25,24 +27,29 @@ def generate_ai_suggestion(child):
 
     prompt = f"""
     You are an AI child development expert.
-    Analyze this child's progress and provide personalized suggestions in Short.
+
+    Provide personalized suggestions for the parent.
+
+    IMPORTANT:
+    Return plain text only.
+    Do NOT use stars, bullet points, markdown, or special characters.
 
     Child: {child.child_name}
     Age: {age_months} months
 
-    Milestones (Completed / Delayed):
+    Milestones:
     {milestone_summary}
 
     Recent Activities:
     {activity_summary}
-
-    Please provide constructive feedback and recommendations for the parent.
     """
 
     model = genai.GenerativeModel("gemini-2.5-flash")
     response = model.generate_content(prompt)
     suggestion_text = response.text if hasattr(response, "text") else str(response)
 
-    # Save to database
+    # Remove stars if model still adds them
+    suggestion_text = suggestion_text.replace("*", "")
+
     GeminiSuggestion.objects.create(child=child, suggestion_text=suggestion_text)
     return suggestion_text

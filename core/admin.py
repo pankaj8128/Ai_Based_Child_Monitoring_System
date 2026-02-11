@@ -1,7 +1,7 @@
 from django.utils.html import format_html
 
 from django.contrib import admin
-from .models import ActivityReport, ChildEnrollmentRequest, ChildMilestone, DaycareRequest, GeminiSuggestion, Milestone, Notification, Profile, Daycare, Parent, Child
+from .models import ActivityReport, ChatMessage, ChildEnrollmentRequest, ChildMilestone, DaycareRequest, GeminiSuggestion, Milestone, Notification, Profile, Daycare, Parent, Child
 
 # ------------------------------
 # Profile Admin
@@ -86,3 +86,10 @@ class NotificationAdmin(admin.ModelAdmin):
     list_filter = ('is_read', 'created_on')
     search_fields = ('title', 'recipient__username', 'message')
     readonly_fields = ('title', 'recipient', 'message', 'created_on')
+
+@admin.register(ChatMessage)
+class ChatMessageAdmin(admin.ModelAdmin):
+    list_display = ('sender', 'recipient', 'timestamp')
+    search_fields = ('sender__username', 'recipient__username', 'message')
+    list_filter = ('timestamp',)
+    ordering = ('-timestamp',)
