@@ -41,9 +41,14 @@ System{% endblock %} {% block content %}
           <i class="bi bi-house-heart me-1"></i>
           {{ item.child.daycare.name }}
         </span>
-        <button class="quick-btn" onclick="window.location.href='{% url 'chat' %}?daycare_id={{ item.child.daycare.id }}'">
+        <button class="quick-btn"
+          onclick="window.location.href='{% url 'chat' %}?daycare_id={{ item.child.daycare.id }}'">
           <i class="bi bi-chat-dots-fill"></i>
           <span>Messages</span>
+        </button>
+        <button class="quick-btn" onclick="window.location.href='{% url 'add_review' item.child.daycare.id %}'">
+          <i class="bi bi-star-fill"></i>
+          <span>Rate Daycare</span>
         </button>
       </div>
     </div>
@@ -52,10 +57,7 @@ System{% endblock %} {% block content %}
   <!-- Child Content Tabs -->
   <div class="child-content">
     <div class="content-tabs">
-      <button
-        class="tab-btn active"
-        data-tab="activities-{{ forloop.counter }}"
-      >
+      <button class="tab-btn active" data-tab="activities-{{ forloop.counter }}">
         <i class="bi bi-activity me-2"></i>Activities
         <span class="tab-count">{{ item.reports|length }}</span>
       </button>
@@ -88,18 +90,14 @@ System{% endblock %} {% block content %}
             <h5 class="activity-title">{{ report.activities_done }}</h5>
 
             {% if report.image %}
-<div class="image mt-2">
-  <a href="{{ report.image.url }}" target="_blank">
-    <img
-      src="{{ report.image.url }}"
-      alt="Activity Image"
-      class="img-fluid rounded shadow-sm"
-      style="max-width: 200px"
-    />
-  </a>
-</div>
-{% endif %}
- {% if report.notes %}
+            <div class="image mt-2">
+              <a href="{{ report.image.url }}" target="_blank">
+                <img src="{{ report.image.url }}" alt="Activity Image" class="img-fluid rounded shadow-sm"
+                  style="max-width: 200px" />
+              </a>
+            </div>
+            {% endif %}
+            {% if report.notes %}
             <p class="activity-notes mt-2">
               <i class="bi bi-chat-quote me-1"></i>{{ report.notes }}
             </p>
@@ -131,15 +129,11 @@ System{% endblock %} {% block content %}
     <div class="tab-content" id="milestones-{{ forloop.counter }}">
       <div class="section-header">
         <h4><i class="bi bi-trophy-fill me-2"></i>Development Milestones</h4>
-        <small class="text-muted"
-          >Track important developmental achievements</small
-        >
+        <small class="text-muted">Track important developmental achievements</small>
       </div>
       <div class="milestones-grid">
         {% for milestone in item.milestones %}
-        <div
-          class="milestone-card {% if milestone.status == 'Achieved' %}achieved{% else %}pending{% endif %}"
-        >
+        <div class="milestone-card {% if milestone.status == 'Achieved' %}achieved{% else %}pending{% endif %}">
           <div class="milestone-icon">
             {% if milestone.milestone.category == 'Physical' %}
             <i class="bi bi-person-arms-up"></i>
@@ -184,9 +178,7 @@ System{% endblock %} {% block content %}
     <div class="tab-content" id="suggestions-{{ forloop.counter }}">
       <div class="section-header">
         <h4><i class="bi bi-lightbulb-fill me-2"></i>AI-Powered Insights</h4>
-        <small class="text-muted"
-          >Personalized recommendations for your child's development</small
-        >
+        <small class="text-muted">Personalized recommendations for your child's development</small>
       </div>
       <div class="suggestions-list">
         {% for suggestion in item.suggestions %}
@@ -196,9 +188,7 @@ System{% endblock %} {% block content %}
           </div>
           <div class="suggestion-content">
             <div class="suggestion-meta">
-              <span class="suggestion-date"
-                >{{ suggestion.created_on|date:"M d, Y" }}</span
-              >
+              <span class="suggestion-date">{{ suggestion.created_on|date:"M d, Y" }}</span>
               <span class="suggestion-type">AI Recommendation</span>
             </div>
             <p class="suggestion-text">{{ suggestion.suggestion_text }}</p>
@@ -360,9 +350,11 @@ System{% endblock %} {% block content %}
     0% {
       box-shadow: 0 0 0 0 rgba(0, 184, 148, 0.7);
     }
+
     70% {
       box-shadow: 0 0 0 10px rgba(0, 184, 148, 0);
     }
+
     100% {
       box-shadow: 0 0 0 0 rgba(0, 184, 148, 0);
     }
@@ -790,10 +782,12 @@ System{% endblock %} {% block content %}
   }
 
   @keyframes float {
+
     0%,
     100% {
       transform: translateY(0px);
     }
+
     50% {
       transform: translateY(-10px);
     }
