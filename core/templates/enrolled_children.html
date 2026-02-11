@@ -16,6 +16,9 @@
         <h5 class="card-title">{{ child.child_name }}</h5>
         <p class="card-text">DOB: {{ child.date_of_birth }}</p>
         <a href="{% url 'view_child' child.id %}" class="btn btn-primary">View</a>
+        {% if child.parent %}
+        <a href="{% url 'chat' %}?parent_id={{ child.parent.id }}" class="btn btn-outline-success ms-2">Message</a>
+        {% endif %}
       </div>
     </div>
   </div>

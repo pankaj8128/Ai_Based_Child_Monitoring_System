@@ -9,8 +9,9 @@ import requests
 
 from core.utils import generate_ai_suggestion
 from core.forms import ActivityReportForm
-from .models import Child, ChildEnrollmentRequest, DaycareRequest, Milestone, Notification, Profile, Daycare, Parent ,ActivityReport, ChildMilestone, GeminiSuggestion
+from .models import Child, ChildEnrollmentRequest, DaycareRequest, Milestone, Notification, Profile, Daycare, Parent ,ActivityReport, ChildMilestone, GeminiSuggestion, ChatMessage
 from .utils import calculate_age_in_months
+from django.db.models import Q
 def home_view(request):
     return render(request,'home.html')
 
@@ -547,3 +548,141 @@ def view_child(request, child_id):
     }
     return render(request, 'view_child.html', context)
 
+
+
+
+@login_required
+def chat_window(request):
+    print("request.method: ", request.method)
+    profile = request.user.profile
+    user = request.user
+
+    # Parent side
+    if profile.role == 'parent':
+        parent = profile.parent
+        children = Child.objects.filter(parent=parent, daycare__verified=True)
+
+        selected_daycare_id = request.GET.get('daycare_id') or request.POST.get('daycare_id')
+        parent_user = parent.profile.user
+        selected_daycare = None
+        chat_partner_name = None
+        messages = []
+
+        # If a daycare is selected (by parent or via ?daycare_id=), show messages for that chat
+        if selected_daycare_id:
+            try:
+                selected_daycare = Daycare.objects.get(id=selected_daycare_id)
+                chat_partner_name = selected_daycare.name
+                daycare_user = selected_daycare.profile.user
+
+                # Handle sending a new message
+                if request.method == 'POST' and request.POST.get('text'):
+                    text = request.POST.get('text')
+                    ChatMessage.objects.create(
+                        sender=parent_user,
+                        recipient=daycare_user,
+                        message=text
+                    )
+                    print("Message sent successfully!", text)
+                    return redirect(f"{request.path}?daycare_id={selected_daycare_id}")
+
+                # Retrieve all chat messages between parent and daycare (both directions)
+                chat_qs = ChatMessage.objects.filter(
+                    (Q(sender=parent_user, recipient=daycare_user) |
+                     Q(sender=daycare_user, recipient=parent_user))
+                ).order_by('timestamp')
+                print("Chat messages:", chat_qs)
+
+                messages = [
+                    {
+                        'sender': msg.sender,
+                        'sender_name': msg.sender.username,
+                        'text': msg.message,
+                        'timestamp': msg.timestamp,
+                        'image': getattr(msg, 'image', None),
+                    }
+                    for msg in chat_qs
+                ]
+                print("Messages:", messages)
+            except Daycare.DoesNotExist:
+                selected_daycare = None
+                chat_partner_name = None
+                messages = []
+        
+        context = {
+            'selected_daycare_id': int(selected_daycare_id) if selected_daycare_id else None,
+            'chat_partner_name': chat_partner_name,
+            'messages': messages if len(messages) > 0 else [{'sender': 'None', 'sender_name': 'No messages yet', 'text': '', 'timestamp': '', 'image': None}],
+            'user': user,
+        }
+        print("Context:", context)
+        return render(request, 'chat_window.html', context)
+
+    # Daycare side
+    elif profile.role == 'daycare':
+        daycare = profile.daycare
+        children = Child.objects.filter(daycare=daycare)
+        parent_set = set(child.parent for child in children)
+        parent_list = list(parent_set)
+
+        selected_parent_id = request.GET.get('parent_id') or request.POST.get('parent_id')
+        daycare_user = daycare.profile.user
+        selected_parent = None
+        chat_partner_name = None
+        messages = []
+
+        # If a parent is selected (by daycare or via ?parent_id=), show messages for that chat
+        if selected_parent_id:
+            try:
+                selected_parent = Parent.objects.get(id=selected_parent_id)
+                chat_partner_name = f"{selected_parent.mother_name} & {selected_parent.father_name}"
+                parent_user = selected_parent.profile.user
+
+                if request.method == 'POST' and request.POST.get('text'):
+                    text = request.POST.get('text')
+                    ChatMessage.objects.create(
+                        sender=daycare_user,
+                        recipient=parent_user,
+                        message=text
+                    )
+                    return redirect(f"{request.path}?parent_id={selected_parent_id}")
+
+                chat_qs = ChatMessage.objects.filter(
+                    (Q(sender=parent_user, recipient=daycare_user) |
+                     Q(sender=daycare_user, recipient=parent_user))
+                ).order_by('timestamp')
+
+                messages = [
+                    {
+                        'sender': msg.sender,
+                        'sender_name': msg.sender.username,
+                        'text': msg.message,
+                        'timestamp': msg.timestamp,
+                        'image': getattr(msg, 'image', None),
+                    }
+                    for msg in chat_qs
+                ]
+            except Parent.DoesNotExist:
+                selected_parent = None
+                chat_partner_name = None
+                messages = []
+        else:
+            # No parent selected: show chat previews for all parents
+            for parent in parent_list:
+                parent_user = parent.profile.user
+                last_msg = ChatMessage.objects.filter(
+                    (Q(sender=parent_user, recipient=daycare_user) |
+                     Q(sender=daycare_user, recipient=parent_user))
+                ).order_by('-timestamp').first()
+
+        context = {
+            'parent_list': parent_list,
+            'selected_parent_id': int(selected_parent_id) if selected_parent_id else None,
+            'chat_partner_name': chat_partner_name,
+            'messages': messages,
+            'user': user,
+        }
+        return render(request, 'chat_window.html', context)
+
+    else:
+        return redirect('home')

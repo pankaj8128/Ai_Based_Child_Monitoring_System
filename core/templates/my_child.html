@@ -41,6 +41,10 @@ System{% endblock %} {% block content %}
           <i class="bi bi-house-heart me-1"></i>
           {{ item.child.daycare.name }}
         </span>
+        <button class="quick-btn" onclick="window.location.href='{% url 'chat' %}?daycare_id={{ item.child.daycare.id }}'">
+          <i class="bi bi-chat-dots-fill"></i>
+          <span>Messages</span>
+        </button>
       </div>
     </div>
   </div>
