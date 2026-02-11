@@ -24,7 +24,7 @@
 
               <div class="message-meta">
                 <span class="sender-name">{{ msg.sender_name }}</span>
-                <span class="timestamp">
+                <span class="timestamp local-time" data-timestamp="{{ msg.timestamp|date:'c' }}">
                   {{ msg.timestamp|date:"M d, Y H:i" }}
                 </span>
               </div>
@@ -161,10 +161,33 @@
   }
 </style>
 
-<!-- Auto Scroll to Bottom -->
 <script>
   const chatBody = document.getElementById("chat-body");
   chatBody.scrollTop = chatBody.scrollHeight;
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const timeElements = document.querySelectorAll(".local-time");
+    timeElements.forEach((el) => {
+      const timestamp = el.getAttribute("data-timestamp");
+      if (timestamp) {
+        const date = new Date(timestamp);
+        const now = new Date();
+        const isToday = date.toDateString() === now.toDateString();
+
+        const options = {
+          hour: '2-digit',
+          minute: '2-digit',
+        };
+
+        if (!isToday) {
+          options.month = 'short';
+          options.day = 'numeric';
+        }
+
+        el.textContent = date.toLocaleString(undefined, options);
+      }
+    });
+  });
 </script>
 
 {% endblock %}
