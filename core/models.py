@@ -72,7 +72,7 @@ class ActivityReport(models.Model):
 
 class Milestone(models.Model):
     category = models.CharField(max_length=50)  # e.g., Motor Skills, Language
-    description = models.TextField()
+    description = models.TextField(blank=False, null=False)  # Ensure description is always present
     typical_age = models.CharField(max_length=20)  # e.g., "6-12 months"
 
     def __str__(self):

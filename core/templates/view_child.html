@@ -47,10 +47,11 @@
       <ul class="list-group list-group-flush">
         {% for cm in milestones %}
         <li class="list-group-item">
-          <strong>{{ cm.milestone.category }}</strong> - {{
-          cm.milestone.description }} (<span class="text-primary"
-            >{{ cm.get_status_display }}</span
-          >)
+          <strong>{{ cm.milestone.category }}</strong> 
+          {% if cm.milestone.description %}
+          - {{ cm.milestone.description }}
+          {% endif %}
+          (<span class="text-primary">{{ cm.get_status_display }}</span>)
         </li>
         {% empty %}
         <li class="list-group-item text-muted">No milestones recorded.</li>
