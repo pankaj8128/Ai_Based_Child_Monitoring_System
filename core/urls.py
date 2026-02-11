@@ -8,6 +8,8 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     
     path('chat/', views.chat_window, name='chat'),
+    path('add_review/<int:daycare_id>/', views.add_review, name='add_review'),
+    path('daycare_reviews/<int:daycare_id>/', views.daycare_reviews, name='daycare_reviews'),
 
     path('dashboard/admin/', views.admin_dashboard, name='admin_dashboard'),
     
