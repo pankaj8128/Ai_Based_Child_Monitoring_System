@@ -1,68 +1,132 @@
-# Ai_Based_Child_Monitoring_System
-AI-Based Child Monitoring System is a web application designed for daycare centers and parents to monitor and track children’s daily activities, milestones, and growth. It provides an intuitive dashboard for daycares and parents, with AI-assisted suggestions and automated notifications for delayed milestones.
+# AI Based Child Monitoring System
 
-Features
+A comprehensive web-based platform designed to connect parents and daycares, facilitating child monitoring, activity tracking, and developmental milestone management.
 
-Admin Panel
+## Features
 
-Approve daycare registrations
+*   **Role-Based Access Control**: specialized dashboards for Admins, Daycares, and Parents.
+*   **Daycare Management**: Profile management, child enrollment handling, and activity reporting.
+*   **Parent Portal**: view child's daily activities, track milestones, and communicate with daycares.
+*   **Child Activity Tracking**: Daily reports with descriptions and images.
+*   **Milestone Tracking**: Monitor developmental milestones (Motor Skills, Language, Social, Cognitive) with status updates.
+*   **AI Suggestions**: Personalized parenting insights and activity suggestions powered by Google Gemini.
+*   **Chat System**: Built-in messaging between parents and daycares.
+*   **Rating System**: Parents can rate and review daycares.
+*   **Notifications**: Real-time alerts for messages and milestone updates.
 
-Manage users and oversee system activities
+## Project Structure
 
-Daycare Dashboard
+```text
+Ai_Based_Child_Monitoring_System/
+├── child_monitoring/       # Project configuration
+│   ├── settings.py         # Django settings
+│   ├── urls.py             # Root URL configuration
+│   └── ...
+├── core/                   # Main application app
+│   ├── migrations/         # Database migrations
+│   ├── templates/          # HTML templates
+│   │   ├── admin_dashboard.html
+│   │   ├── daycare_dashboard.html
+│   │   ├── parent_dashboard.html
+│   │   ├── my_child.html
+│   │   └── ...
+│   ├── models.py           # Database models (Child, Parent, Daycare, Milestone, etc.)
+│   ├── views.py            # Application logic and view functions
+│   ├── urls.py             # App-specific URL routing
+│   └── utils.py            # Utility functions (AI integration, age calculation)
+├── media/                  # User-uploaded content (images, documents)
+├── templates/              # Base templates (layout.html)
+├── manage.py               # Django command-line utility
+├── requirements.txt        # Project dependencies
+└── README.md               # Project documentation
+```
 
-View enrolled children
+## Installation and Setup
 
-See pending enrollment requests
+Follow these steps to set up the project locally.
 
-Add daily activity reports
+### Prerequisites
 
-Monitor child milestones
+*   Python 3.8 or higher
+*   Git
 
-Receive notifications for delayed milestones
+### 1. Clone the Repository
 
-Parent Dashboard
+```bash
+git clone https://github.com/pankaj8128/Ai_Based_Child_Monitoring_System.git
+cd Ai_Based_Child_Monitoring_System
+```
 
-Register and enroll children
+### 2. Create and Activate a Virtual Environment
 
-Track child activities and milestones
+It is recommended to use a virtual environment to manage dependencies.
 
-Receive notifications when milestones are delayed
+**Windows:**
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
 
-View uploaded activity images
+**macOS/Linux:**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
 
-Child Management
+### 3. Install Dependencies
 
-Store child details including birth certificates and medical history
+Install the required Python packages listed in `requirements.txt`.
 
-Track milestones and status (pending, completed, delayed)
+```bash
+pip install -r requirements.txt
+```
 
-AI suggestions for child development
+### 4. Environment Configuration
 
-Notifications
+Create a `.env` file in the root directory and add your Google Gemini API key:
 
-Automatic notifications sent to parents and daycares when milestones are delayed
+```text
+GEMINI_API_KEY=your_api_key_here
+```
 
-AI Integration
+### 5. Database Setup
 
-AI-powered suggestions for child development and growth
+Apply database migrations to set up the schema and insert default data (including milestones).
 
-Daily Thought
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
 
-Motivational quote fetched daily from ZenQuotes API
+### 6. Create a Superuser (Admin)
 
-Technology Stack
+Create an admin account to manage the system.
 
-Backend: Python, Django
+```bash
+python manage.py createsuperuser
+```
 
-Frontend: HTML, CSS, Bootstrap
+### 7. Run the Development Server
 
-Database: SQLite / MySQL
+Start the Django development server.
 
-Authentication: Django User model with extended roles (Admin, Daycare, Parent)
+```bash
+python manage.py runserver
+```
 
-AI Features: AI suggestions for milestones
+Open your browser and navigate to `http://127.0.0.1:8000/` to access the application.
 
-Notifications: Custom Django model for real-time notifications
+## Usage Guide
 
-APIs: ZenQuotes for daily thought
+*   **Registration**: Users can register as a Parent or Daycare.
+*   **Admin**: Log in with the superuser account to verify daycares and manage users.
+*   **Daycare**: Complete your profile, verify your account, enroll children, and post daily activity reports.
+*   **Parent**: Complete your profile, enroll your child in a daycare, view reports, and track milestones.
+
+## Technologies Used
+
+*   **Backend**: Django, Python
+*   **Frontend**: HTML, CSS, JavaScript (Bootstrap/Vanilla)
+*   **Database**: SQLite (default)
+*   **AI Integration**: Google Generative AI (Gemini)
+*   **Image Processing**: Pillow
