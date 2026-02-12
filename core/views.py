@@ -553,7 +553,6 @@ def view_child(request, child_id):
 
 @login_required
 def chat_window(request):
-    print("request.method: ", request.method)
     profile = request.user.profile
     user = request.user
 
@@ -583,7 +582,6 @@ def chat_window(request):
                         recipient=daycare_user,
                         message=text
                     )
-                    print("Message sent successfully!", text)
                     return redirect(f"{request.path}?daycare_id={selected_daycare_id}")
 
                 # Retrieve all chat messages between parent and daycare (both directions)
@@ -591,7 +589,6 @@ def chat_window(request):
                     (Q(sender=parent_user, recipient=daycare_user) |
                      Q(sender=daycare_user, recipient=parent_user))
                 ).order_by('timestamp')
-                print("Chat messages:", chat_qs)
 
                 messages = [
                     {
@@ -603,7 +600,6 @@ def chat_window(request):
                     }
                     for msg in chat_qs
                 ]
-                print("Messages:", messages)
             except Daycare.DoesNotExist:
                 selected_daycare = None
                 chat_partner_name = None
@@ -615,7 +611,6 @@ def chat_window(request):
             'messages': messages if len(messages) > 0 else [{'sender': 'None', 'sender_name': 'No messages yet', 'text': '', 'timestamp': '', 'image': None}],
             'user': user,
         }
-        print("Context:", context)
         return render(request, 'chat_window.html', context)
 
     # Daycare side
