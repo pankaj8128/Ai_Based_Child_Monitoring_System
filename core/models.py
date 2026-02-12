@@ -154,3 +154,14 @@ class ChatMessage(models.Model):
 
     def __str__(self):
         return f"From {self.sender.username} to {self.recipient.username} at {self.timestamp}"
+
+class DaycareReview(models.Model):
+    daycare = models.ForeignKey(Daycare, on_delete=models.CASCADE, related_name='reviews')
+    parent = models.ForeignKey(Parent, on_delete=models.CASCADE)
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
+    comment = models.TextField()
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.rating} stars for {self.daycare.name} by {self.parent}"
+    

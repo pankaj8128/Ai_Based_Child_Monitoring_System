@@ -1,7 +1,7 @@
 from django.utils.html import format_html
 
 from django.contrib import admin
-from .models import ActivityReport, ChatMessage, ChildEnrollmentRequest, ChildMilestone, DaycareRequest, GeminiSuggestion, Milestone, Notification, Profile, Daycare, Parent, Child
+from .models import ActivityReport, ChatMessage, ChildEnrollmentRequest, ChildMilestone, DaycareRequest, DaycareReview, GeminiSuggestion, Milestone, Notification, Profile, Daycare, Parent, Child
 
 # ------------------------------
 # Profile Admin
@@ -93,3 +93,10 @@ class ChatMessageAdmin(admin.ModelAdmin):
     search_fields = ('sender__username', 'recipient__username', 'message')
     list_filter = ('timestamp',)
     ordering = ('-timestamp',)
+
+@admin.register(DaycareReview)
+class DaycareReviewAdmin(admin.ModelAdmin):
+    list_display = ("daycare", "parent", "rating", "created_on")
+    list_filter = ("rating", "created_on", "daycare")
+    search_fields = ("daycare__name", "parent__user__username", "comment")
+    readonly_fields = ("created_on",)

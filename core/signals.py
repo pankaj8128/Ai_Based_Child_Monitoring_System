@@ -13,7 +13,7 @@ def create_child_milestones(sender, instance, created, **kwargs):
                 milestone=milestone,
                 status='pending'
             )
-# signals.py
+# signals.py 
 
 # Chat message notification
 from django.db.models.signals import post_save
