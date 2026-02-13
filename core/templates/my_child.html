@@ -133,7 +133,7 @@ System{% endblock %} {% block content %}
       </div>
       <div class="milestones-grid">
         {% for milestone in item.milestones %}
-        <div class="milestone-card {% if milestone.status == 'Achieved' %}achieved{% else %}pending{% endif %}">
+        <div class="milestone-card {% if milestone.status == 'completed' %}achieved{% else %}pending{% endif %}">
           <div class="milestone-icon">
             {% if milestone.milestone.category == 'Physical' %}
             <i class="bi bi-person-arms-up"></i>
@@ -150,11 +150,12 @@ System{% endblock %} {% block content %}
               {{ milestone.milestone.category }}
             </h6>
             <div class="milestone-status">
-              {% if milestone.status == 'Achieved' %}
+              {% if milestone.status == 'completed' %}
               <span class="status-badge achieved">
-                <i class="bi bi-check-circle-fill me-1"></i>Achieved
+                <i class="bi bi-check-circle-fill me-1"></i>Completed
               </span>
               {% else %}
+
               <span class="status-badge pending">
                 <i class="bi bi-clock-fill me-1"></i>{{ milestone.status }}
               </span>
